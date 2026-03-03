@@ -28,35 +28,57 @@
     const explanationHTML = sec.explanation
       .map((p) => `<p>${p}</p>`)
       .join("");
-    section.innerHTML += `<div class="explanation">${explanationHTML}</div>`;
 
-    // Diagram
+    // Create split layout wrapper
+    section.innerHTML += `<div class="section-layout"></div>`;
+    const layout = section.querySelector(".section-layout");
+
+    // Left pane: code
+    layout.innerHTML += `
+      <div class="left-pane">
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>microgpt_pytorch.py (${sec.lineRange})</span>
+            <span>Python</span>
+          </div>
+          <pre>${highlightPython(sec.code)}</pre>
+        </div>
+      </div>`;
+
+    // Right pane: explanation and supplemental information
+    let rightPaneHTML = `
+      <div class="right-pane">
+        <div class="explanation">${explanationHTML}</div>`;
+
     if (sec.diagram) {
-      section.innerHTML += `
+      rightPaneHTML += `
         <div class="diagram">
           ${sec.diagram}
           ${sec.diagramLabel ? `<div class="diagram-label">${sec.diagramLabel}</div>` : ""}
         </div>`;
     }
 
-    // Code block
-    section.innerHTML += `
-      <div class="code-block">
-        <div class="code-block-header">
-          <span>microgpt_pytorch.py (${sec.lineRange})</span>
-          <span>Python</span>
-        </div>
-        <pre>${highlightPython(sec.code)}</pre>
-      </div>`;
-
-    // Key point
     if (sec.keyPoint) {
-      section.innerHTML += `
+      rightPaneHTML += `
         <div class="key-point">
           <div class="key-point-label">Point</div>
           <p>${sec.keyPoint}</p>
         </div>`;
     }
+
+    rightPaneHTML += "</div>";
+    layout.innerHTML += rightPaneHTML;
+
+    // Section navigation
+    const prevSec = idx > 0 ? SECTIONS[idx - 1] : null;
+    const nextSec = idx < SECTIONS.length - 1 ? SECTIONS[idx + 1] : null;
+
+    section.innerHTML += `
+      <div class="section-nav">
+        ${prevSec ? `<a class="nav-btn" href="#${prevSec.id}">← 前の項</a>` : '<span class="nav-spacer"></span>'}
+        <a class="nav-btn" href="#toc">目次に戻る</a>
+        ${nextSec ? `<a class="nav-btn" href="#${nextSec.id}">次の項 →</a>` : '<span class="nav-spacer"></span>'}
+      </div>`;
 
     content.appendChild(section);
   });
