@@ -26,6 +26,7 @@ body {
     color: var(--text);
     line-height: 1.8;
     font-size: 16px;
+    scroll-snap-type: y proximity;
 }
 
 /* === Header === */
@@ -91,6 +92,12 @@ main {
 .section {
     margin-bottom: 3.5rem;
     scroll-margin-top: 1.5rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 }
 
 .section-header {
@@ -297,6 +304,11 @@ footer code {
 @media (max-width: 900px) {
     .section-layout {
         grid-template-columns: 1fr;
+    }
+
+    .section {
+        min-height: auto;
+        justify-content: flex-start;
     }
 }
 
